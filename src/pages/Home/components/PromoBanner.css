@@ -1,0 +1,70 @@
+/* src/pages/Home/components/PromoBanner.css */
+.promo-section { padding: 40px 0; background: var(--color-bg-soft); }
+
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.promo-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 26px 22px;
+  border-radius: var(--radius-xl);
+  color: #fff;
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.promo-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+
+.promo-card__circle {
+  position: absolute;
+  top: -30%; right: -10%;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+
+.promo-card__emoji {
+  font-size: 2.8rem;
+  flex-shrink: 0;
+  z-index: 1;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.14));
+  animation: promo-bounce 2.2s ease-in-out infinite;
+}
+@keyframes promo-bounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+.promo-card__body { z-index: 1; }
+
+.promo-card__tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.22);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 5px;
+}
+.promo-card__title    { font-size: 1.3rem; font-weight: 900; line-height: 1.1; margin-bottom: 2px; }
+.promo-card__subtitle { font-size: 0.88rem; font-weight: 700; opacity: .9; margin-bottom: 3px; }
+.promo-card__desc     { font-size: 0.76rem; opacity: .72; margin-bottom: 12px; }
+
+.promo-card__cta {
+  display: inline-block;
+  background: rgba(255,255,255,0.18);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem; font-weight: 700;
+  transition: background var(--transition);
+}
+.promo-card:hover .promo-card__cta { background: rgba(255,255,255,0.32); }
+
+@media (max-width: 900px)  { .promo-grid { grid-template-columns: 1fr; gap: 14px; } }

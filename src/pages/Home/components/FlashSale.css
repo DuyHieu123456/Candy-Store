@@ -1,0 +1,77 @@
+/* src/pages/Home/components/FlashSale.css */
+.flash-section { padding: 50px 0; background: #fff5f5; }
+
+/* Header */
+.flash-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.flash-section__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.flash-section__bolt {
+  font-size: 1.7rem;
+  animation: bolt 1s ease-in-out infinite;
+}
+@keyframes bolt {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .6; transform: scale(1.2); }
+}
+.flash-section__title {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+}
+
+/* Countdown */
+.flash-section__countdown { display: flex; align-items: center; gap: 10px; }
+.flash-section__cd-label  { font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+.flash-section__cd-boxes  { display: flex; align-items: center; }
+.flash-section__cd-item   { display: flex; align-items: center; }
+.flash-section__cd-sep    { font-size: 1.4rem; font-weight: 900; color: var(--color-primary); padding: 0 4px; margin-bottom: 6px; }
+.flash-section__cd-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  min-width: 50px;
+}
+.flash-section__cd-num  { font-size: 1.35rem; font-weight: 900; line-height: 1; }
+.flash-section__cd-unit { font-size: 0.58rem; font-weight: 700; letter-spacing: 1px; opacity: .85; margin-top: 2px; }
+
+.flash-section__view-all {
+  padding: 10px 22px;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition);
+}
+.flash-section__view-all:hover { background: var(--color-primary); color: #fff; }
+
+/* Grid */
+.flash-section__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) { .flash-section__grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px)  {
+  .flash-section__grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .flash-section__header { flex-direction: column; align-items: flex-start; }
+  .flash-section__title { font-size: 1.5rem; }
+}
