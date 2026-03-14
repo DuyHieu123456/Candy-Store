@@ -1,0 +1,23 @@
+.related-products {
+  text-align: left;
+}
+
+.related-products__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 20px;
+}
+
+.related-products__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .related-products__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
