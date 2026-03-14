@@ -1,4 +1,5 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
+import { getInitialCartState, persistCart } from "../store/cartStore";
 
 const CartContext = createContext(null);
 
@@ -43,7 +44,11 @@ const cartReducer = (state, action) => {
 };
 
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [] });
+  const [state, dispatch] = useReducer(cartReducer, getInitialCartState());
+
+  useEffect(() => {
+    persistCart(state.items);
+  }, [state.items]);
 
   const addItem    = (product) => dispatch({ type: "ADD_ITEM",        payload: product });
   const removeItem = (id)      => dispatch({ type: "REMOVE_ITEM",     payload: id });
