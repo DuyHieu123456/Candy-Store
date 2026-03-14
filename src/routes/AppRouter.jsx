@@ -1,32 +1,23 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-import Login from "../pages/Auth/Login"
-import Register from "../pages/Auth/Register"
-import Products from "../pages/Products/Products"
-import ProductDetail from "../pages/ProductDetail/ProductDetail"
-import Cart from "../pages/Cart/Cart"
-import Checkout from "../pages/Checkout/Checkout"
-import OrderHistory from "../pages/Orders/OrderHistory"
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-function AppRouter() {
-  return (
-    <BrowserRouter>
-      <Routes>
+import MainLayout from "../layouts/MainLayout";
+import Home       from "../pages/Home/Home.jsx";
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
 
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
+      { index: true, element: <Home /> },
 
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
 
-        <Route path="/orders" element={<OrderHistory />} />
+    ],
+  },
 
-      </Routes>
-    </BrowserRouter>
-  )
-}
+]);
 
-export default AppRouter
+const AppRouter = () => <RouterProvider router={router} />;
+
+export default AppRouter;
