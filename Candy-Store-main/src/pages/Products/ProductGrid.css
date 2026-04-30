@@ -1,0 +1,23 @@
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.product-grid__empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text);
+}
+.product-grid__empty-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 12px;
+}
