@@ -1,4 +1,5 @@
 const CART_KEY = "candy_store_cart";
+const ORDERS_KEY = "candy_store_orders";
 
 const cartService = {
     getCart() {
@@ -25,12 +26,27 @@ const cartService = {
     async placeOrder(orderData) {
         return new Promise((resolve) => {
             setTimeout(() => {
-                resolve({
+                const createdOrder = {
                     success: true,
                     orderId: "CS" + Date.now(),
                     message: "Đặt hàng thành công!",
+                    status: "Đang xử lý",
+                    createdAt: new Date().toISOString(),
                     ...orderData,
-                });
+                };
+
+                try {
+                    const data = localStorage.getItem(ORDERS_KEY);
+                    const current = data ? JSON.parse(data) : [];
+                    const next = Array.isArray(current)
+                        ? [createdOrder, ...current]
+                        : [createdOrder];
+                    localStorage.setItem(ORDERS_KEY, JSON.stringify(next));
+                } catch (err) {
+                    console.error("cartService.placeOrder persist error:", err);
+                }
+
+                resolve(createdOrder);
             }, 1500);
         });
     },

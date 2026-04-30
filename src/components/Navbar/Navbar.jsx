@@ -1,25 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useCart from "../../hooks/useCart";
 import useAuth from "../../hooks/useAuth";
+import { useUser } from "../../store/userStore.jsx";
 import "./Navbar.css";
 
 const NAV_LINKS = [
-  { label: "Tất Cả",     path: "/products" },
-  { label: "Kẹo Ngọt",  path: "/products?category=candy" },
-  { label: "Socola",    path: "/products?category=chocolate" },
-  { label: "Snack",     path: "/products?category=snack" },
-  { label: "Bánh Quy",  path: "/products?category=cookie" },
+  { label: "Tất Cả", path: "/products" },
+  { label: "Kẹo Ngọt", path: "/products?category=candy" },
+  { label: "Socola", path: "/products?category=chocolate" },
+  { label: "Snack", path: "/products?category=snack" },
+  { label: "Bánh Quy", path: "/products?category=cookie" },
   { label: "Combo Quà", path: "/products?category=gift" },
-  { label: "🔥 Sale",   path: "/products?sale=true" },
+  { label: "🔥 Sale", path: "/products?sale=true" },
 ];
 
 const Navbar = () => {
-  const [searchQuery, setSearchQuery]   = useState("");
-  const [menuOpen,    setMenuOpen]      = useState(false);
-  const { totalItems }                  = useCart();
-  const { user, isAuthenticated, logout, isAdmin } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { totalItems } = useCart();
+  const { user, isAuthenticated, logout: logoutAuth, isAdmin } = useAuth();
+  const { logout: logoutUser } = useUser();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logoutAuth();
+    logoutUser();
+    setUserMenuOpen(false);
+    navigate("/");
+  };
+
+  const handleUserMenuClick = (e) => {
+    e.stopPropagation();
+    setUserMenuOpen((prev) => !prev);
+  };
+
+  const handleUserMenuItemClick = () => {
+    setUserMenuOpen(false);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -30,6 +49,15 @@ const Navbar = () => {
       setMenuOpen(false);
     }
   };
+
+  useEffect(() => {
+    const handleDocumentClick = () => {
+      setUserMenuOpen(false);
+    };
+
+    document.addEventListener("click", handleDocumentClick);
+    return () => document.removeEventListener("click", handleDocumentClick);
+  }, []);
 
   return (
     <header className="navbar-wrapper">
@@ -69,18 +97,40 @@ const Navbar = () => {
 
             {isAuthenticated ? (
               <div className="navbar__user-menu">
-                <button className="navbar__icon-btn navbar__user-btn">
+                <button
+                  className="navbar__icon-btn navbar__user-btn"
+                  onClick={handleUserMenuClick}
+                >
                   👤 <span>{user.name?.split(" ").pop()}</span>
                 </button>
-                <div className="navbar__dropdown">
-                  {isAdmin && <Link to="/admin">⚙️ Quản trị</Link>}
-                  <Link to="/orders">📦 Đơn hàng</Link>
-                  <Link to="/profile">👤 Tài khoản</Link>
-                  <button onClick={logout}>🚪 Đăng xuất</button>
-                </div>
+                {userMenuOpen && (
+                  <div className="navbar__dropdown" onClick={(e) => e.stopPropagation()}>
+                    {isAdmin && (
+                      <Link to="/admin" onClick={handleUserMenuItemClick}>
+                        ⚙️ Quản trị
+                      </Link>
+                    )}
+                    <Link to="/orders" onClick={handleUserMenuItemClick}>
+                      📦 Đơn hàng
+                    </Link>
+                    <Link to="/profile" onClick={handleUserMenuItemClick}>
+                      👤 Tài khoản
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleUserMenuItemClick();
+                        handleLogout();
+                      }}
+                    >
+                      🚪 Đăng xuất
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
-              <Link to="/auth/login" className="navbar__icon-btn" aria-label="Đăng nhập">👤</Link>
+              <Link to="/login" className="navbar__icon-btn" aria-label="Đăng nhập">
+                👤
+              </Link>
             )}
 
             <Link to="/cart" className="navbar__icon-btn navbar__cart-btn" aria-label="Giỏ hàng">
@@ -118,7 +168,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-    </header>
+    </header >
   );
 };
 
