@@ -1,7 +1,7 @@
-// src/pages/Home/components/PromoBanner.jsx
 import { Link } from "react-router-dom";
 import "./PromoBanner.css";
 
+// Giữ nguyên dữ liệu PROMOS từ bản gốc của bạn để đảm bảo tính ổn định
 const PROMOS = [
   {
     id: 1,
@@ -48,16 +48,31 @@ const PromoBanner = () => (
             to={p.to}
             className="promo-card"
             style={{ background: p.gradient }}
+            aria-label={`${p.tag}: ${p.title}`} // Tăng cường khả năng tiếp cận[cite: 18]
           >
-            <span className="promo-card__emoji">{p.emoji}</span>
-            <div className="promo-card__body">
-              <span className="promo-card__tag">{p.tag}</span>
-              <h3 className="promo-card__title">{p.title}</h3>
-              <p className="promo-card__subtitle">{p.subtitle}</p>
-              <p className="promo-card__desc">{p.desc}</p>
-              <span className="promo-card__cta">{p.cta} →</span>
+            <div className="promo-card__visual">
+              <span className="promo-card__emoji">{p.emoji}</span>
             </div>
+            
+            <div className="promo-card__body">
+              <div className="promo-card__header">
+                <span className="promo-card__tag">{p.tag}</span>
+                <h3 className="promo-card__title">{p.title}</h3>
+                <p className="promo-card__subtitle">{p.subtitle}</p>
+              </div>
+              
+              <p className="promo-card__desc">{p.desc}</p>
+              
+              <div className="promo-card__footer">
+                <span className="promo-card__cta">
+                  {p.cta} <span className="cta-arrow">→</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Phần trang trí vòng tròn đặc trưng từ code cũ của bạn */}
             <div className="promo-card__circle" aria-hidden="true" />
+            <div className="promo-card__circle-alt" aria-hidden="true" />
           </Link>
         ))}
       </div>

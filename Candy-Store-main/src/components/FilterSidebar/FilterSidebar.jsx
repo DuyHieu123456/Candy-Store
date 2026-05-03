@@ -1,53 +1,70 @@
-// src/components/FilterSidebar/FilterSidebar.jsx
-import { CATEGORIES } from "../../data/categories";
-import { PRICE_RANGES } from "../../services/productService";
-import "./FilterSidebar.css";
+import { CATEGORIES } from "../../data/categories"; // Danh mục cố định hoặc từ API
+import { PRICE_RANGES } from "../../services/productService"; // Hằng số giá đã tối ưu
+import "./FilterSidebar.css"; // Tích hợp phong cách bố cục linh hoạt
 
+/**
+ * FilterSidebar - Bộ lọc kẹo đa năng.
+ * Cho phép khách hàng tinh chỉnh danh sách kẹo theo loại, túi tiền và ưu đãi[cite: 40].
+ */
 const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) => {
+  
+  // Xác định trạng thái "Tất cả": Khi không chọn loại kẹo cụ thể và không lọc giảm giá.
+  const isAllActive = !filters.category && !filters.sale;
+
   return (
     <aside className="filter-sidebar">
-      {/* ── Danh mục ── */}
+      {/* ── Phần 1: Phân loại kẹo theo danh mục ── */}
       <div className="filter-sidebar__section">
-        <h3 className="filter-sidebar__title">📂 Danh mục</h3>
+        <h3 className="filter-sidebar__title">📂 DANH MỤC KẸO</h3>
         <ul className="filter-sidebar__list">
           <li>
             <button
-              className={`filter-sidebar__item ${!filters.category && !filters.sale ? "filter-sidebar__item--active" : ""}`}
+              className={`filter-sidebar__item ${isAllActive ? "filter-sidebar__item--active" : ""}`}
               onClick={() => onCategory("")}
             >
-              🏪 Tất cả
+              <span className="item-emoji">🏪</span> Tất cả sản phẩm
             </button>
           </li>
+
+          {/* Duyệt qua danh sách danh mục để tạo các nút lọc nhanh */}
           {CATEGORIES.filter((c) => c.slug !== "sale").map((cat) => (
             <li key={cat.id}>
               <button
                 className={`filter-sidebar__item ${filters.category === cat.slug ? "filter-sidebar__item--active" : ""}`}
                 onClick={() => onCategory(cat.slug)}
               >
-                {cat.emoji} {cat.name}
-                <span className="filter-sidebar__count">{cat.count}</span>
+                <span className="item-emoji">{cat.emoji}</span> 
+                <span className="item-name">{cat.name}</span>
+                {cat.count > 0 && (
+                  <span className="filter-sidebar__count">{cat.count}</span>
+                )}
               </button>
             </li>
           ))}
+
+          {/* Mục "Khuyến Mãi" được thiết kế nổi bật để kích thích mua sắm */}
           <li>
             <button
-              className={`filter-sidebar__item ${filters.sale ? "filter-sidebar__item--active filter-sidebar__item--hot" : ""}`}
+              className={`filter-sidebar__item filter-sidebar__item--hot ${
+                filters.sale ? "filter-sidebar__item--active" : ""
+              }`}
               onClick={() => onSale(!filters.sale)}
             >
-              🏷️ Khuyến Mãi
+              <span className="item-emoji">🏷️</span> Kẹo Giảm Giá 🔥
             </button>
           </li>
         </ul>
       </div>
 
-      {/* ── Khoảng giá ── */}
+      {/* ── Phần 2: Lọc theo ngân sách (Price Ranges) ── */}
       <div className="filter-sidebar__section">
-        <h3 className="filter-sidebar__title">💰 Khoảng giá</h3>
+        <h3 className="filter-sidebar__title">💰 KHOẢNG GIÁ</h3>
         <ul className="filter-sidebar__list">
           {PRICE_RANGES.map((range, idx) => (
             <li key={idx}>
               <button
                 className={`filter-sidebar__item ${filters.priceRange === idx ? "filter-sidebar__item--active" : ""}`}
+                // Logic Toggle: Nhấn vào khoảng giá đang chọn sẽ bỏ lọc giá đó.
                 onClick={() => onPriceRange(filters.priceRange === idx ? null : idx)}
               >
                 {range.label}
@@ -57,10 +74,16 @@ const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) =
         </ul>
       </div>
 
-      {/* ── Reset ── */}
-      <button className="filter-sidebar__reset" onClick={onReset}>
-        🗑️ Xóa bộ lọc
-      </button>
+      {/* ── Phần 3: Thiết lập lại (Reset) ── */}
+      <div className="filter-sidebar__footer">
+        <button 
+          className="filter-sidebar__reset" 
+          onClick={onReset}
+          title="Xóa tất cả các bộ lọc hiện tại"
+        >
+          🗑️ LÀM MỚI BỘ LỌC
+        </button>
+      </div>
     </aside>
   );
 };

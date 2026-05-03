@@ -4,56 +4,50 @@ import { formatPrice } from "../../utils/formatPrice";
 
 const OrderSuccess = ({ order }) => {
   const paymentLabel = {
-    cod:        "💵 Thanh toán khi nhận hàng",
-    momo:       "💜 Ví MoMo",
-    zalopay:    "🔵 ZaloPay",
-    visa:       "💳 VISA",
-    mastercard: "💳 Mastercard",
+    cod: "💵 Tiền mặt (COD)",
+    momo: "💜 Ví MoMo",
+    vnpay: "💳 VNPay",
   };
 
   return (
     <div className="order-success">
       <div className="order-success__icon">🎉</div>
-
       <h2 className="order-success__title">Đặt Hàng Thành Công!</h2>
-      <p className="order-success__order-id">#{order.orderId}</p>
+      {/* Hiển thị mã đơn hàng chính xác từ Backend[cite: 16, 33] */}
+      <p className="order-success__order-id">Mã đơn: #{order.order_number}</p>
 
       <p className="order-success__sub">
-        Cảm ơn bạn đã tin tưởng Candy Store! 🍬<br />
-        Chúng tôi sẽ liên hệ xác nhận đơn hàng sớm nhất có thể.
+        Candy Store đã nhận đơn hàng của bạn! 🍬<br />
+        Chúng tôi sẽ chuẩn bị kẹo và giao đến bạn sớm nhất.
       </p>
 
       <div className="order-success__info-box">
         <div className="order-success__info-row">
-          <span>Người nhận</span>
-          <span>{order.fullName}</span>
+          <span>Người nhận:</span>
+          <span>{order.fullName}</span> {/* Dữ liệu từ form khách nhập[cite: 33] */}
         </div>
         <div className="order-success__info-row">
-          <span>Số điện thoại</span>
-          <span>{order.phone}</span>
+          <span>Địa chỉ:</span>
+          <span>{order.address}</span> {/* Dữ liệu từ form khách nhập[cite: 33] */}
         </div>
         <div className="order-success__info-row">
-          <span>Địa chỉ</span>
-          <span>{order.address}, {order.district}, {order.province}</span>
-        </div>
-        <div className="order-success__info-row">
-          <span>Thanh toán</span>
+          <span>Thanh toán:</span>
           <span>{paymentLabel[order.payment] || order.payment}</span>
         </div>
         <div className="order-success__info-row">
-          <span>Tổng tiền</span>
+          <span>Tổng tiền:</span>
           <span style={{ color: "var(--color-primary)", fontWeight: 800 }}>
-            {formatPrice(order.finalTotal)}
+            {formatPrice(order.totalPrice)}
           </span>
         </div>
       </div>
 
       <div className="order-success__actions">
         <Link to="/orders">
-          <Button variant="outline">📦 Xem Đơn Hàng</Button>
+          <Button variant="outline">📦 Theo Dõi Đơn Hàng</Button>
         </Link>
-        <Link to="/products">
-          <Button>🛍️ Tiếp Tục Mua Sắm</Button>
+        <Link to="/">
+          <Button>🛍️ Về Trang Chủ</Button>
         </Link>
       </div>
     </div>

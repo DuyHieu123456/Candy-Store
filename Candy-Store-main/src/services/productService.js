@@ -1,56 +1,67 @@
-import api from './api'; // Import instance axios chúng ta đã tạo ở bước trước
+import api from './api'; // Import instance axios đã cấu hình
 
-const PRICE_RANGES = [
+// ── CẤU HÌNH HẰNG SỐ ──
+export const PRICE_RANGES = [
   { label: "Dưới 50K", min: 0, max: 50000 },
   { label: "50K - 100K", min: 50000, max: 100000 },
   { label: "100K - 200K", min: 100000, max: 200000 },
   { label: "Trên 200K", min: 200000, max: Infinity },
 ];
 
-const PER_PAGE = 8;
+export const PER_PAGE = 8;
 
 /**
- * Hàm phụ: Gọi API lấy dữ liệu từ Backend và đồng bộ hóa tên key
- * Chuyển đổi từ PascalCase (SQL) sang camelCase (Frontend đang dùng)
+ * 1. Hàm nội bộ: Gọi API và đồng bộ hóa dữ liệu từ SQL Server.
  */
-async function fetchAndNormalizeProducts() {
+export async function fetchAndNormalizeProducts() {
   try {
     const response = await api.get('/products');
-    const dbProducts = response.data;
+    const dbProducts = response.data.data || [];
 
     return dbProducts.map(p => ({
-      id: p.Id,
-      name: p.Name,
-      category: p.CategoryId, // Hiện tại đang dùng ID làm category
-      price: p.Price,
-      brand: "", // Trong DB chưa có bảng Brand, tạm để trống
-      isSale: p.IsFeatured, // Tạm dùng cờ IsFeatured làm điều kiện giảm giá/nổi bật
-      image: p.ImageUrl || "https://via.placeholder.com/150", // Ảnh mặc định nếu DB null
-      slug: p.Slug
+      id: p.Id || p.id,
+      name: p.Name || p.name,
+      category_id: p.CategoryId || p.category_id,
+      price: p.Price || p.price,
+      stock: p.Stock || p.stock || 0,
+      brand: p.BrandName || "",
+      isSale: p.IsFeatured || p.is_featured,
+      image_url: p.ImageUrl || p.image || "https://via.placeholder.com/150",
+      description: p.Description || p.description || "",
+      slug: p.Slug || p.slug
     }));
   } catch (error) {
     console.error("Lỗi khi tải dữ liệu từ Database:", error);
-    return []; // Trả về mảng rỗng nếu sập server để app không bị crash
+    return [];
   }
 }
 
-// Thêm từ khóa "async" vào trước hàm
-async function filterProducts({ category, priceRange, search, sale, page = 1 }) {
-  // 1. Lấy dữ liệu THẬT từ Database thay vì biến tĩnh PRODUCTS
+/**
+ * 2. Lấy sản phẩm liên quan.
+ * Xuất bản định danh để sửa lỗi "does not provide an export named 'getRelatedProducts'".
+ */
+export async function getRelatedProducts(productId, category, limit = 4) {
+  const products = await fetchAndNormalizeProducts();
+  return products
+    .filter((p) => String(p.category_id) === String(category) && p.id !== Number(productId))
+    .slice(0, limit);
+}
+
+/**
+ * 3. Logic lọc sản phẩm.
+ */
+export async function filterProducts({ category, priceRange, search, sale, page = 1 }) {
   let results = await fetchAndNormalizeProducts();
 
-  // 2. Các logic lọc bên dưới được giữ nguyên vẹn như cũ của bạn
   if (search) {
     const q = search.toLowerCase();
     results = results.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.brand.toLowerCase().includes(q)
+      (p) => p.name.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q))
     );
   }
 
   if (category) {
-    results = results.filter((p) => p.category === category);
+    results = results.filter((p) => String(p.category_id) === String(category));
   }
 
   if (sale) {
@@ -66,25 +77,32 @@ async function filterProducts({ category, priceRange, search, sale, page = 1 }) 
 
   const totalCount = results.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PER_PAGE));
-  const safePage = Math.min(page, totalPages);
-  const start = (safePage - 1) * PER_PAGE;
+  const start = (Math.min(page, totalPages) - 1) * PER_PAGE;
   const products = results.slice(start, start + PER_PAGE);
 
-  return { products, totalPages, totalCount, currentPage: safePage };
+  return { products, totalPages, totalCount, currentPage: page };
 }
 
-// Đổi thành hàm async
-async function getProductById(productId) {
+export async function getProductById(productId) {
   const products = await fetchAndNormalizeProducts();
-  return products.find((p) => p.id === Number(productId));
+  const found = products.find((p) => p.id === Number(productId));
+  return found ? { success: true, data: found } : { success: false };
 }
 
-// Đổi thành hàm async
-async function getRelatedProducts(productId, category, limit = 4) {
-  const products = await fetchAndNormalizeProducts();
-  return products
-    .filter((p) => p.category === category && p.id !== Number(productId))
-    .slice(0, limit);
-}
+/**
+ * 4. Đối tượng productService (Dành cho Admin & Default Import).
+ */
+const productService = {
+  getAll: async function() {
+    const data = await fetchAndNormalizeProducts();
+    return { success: true, data };
+  },
+  filterProducts,
+  getRelatedProducts,
+  getById: getProductById,
+  createProduct: (data) => api.post('/products', data),
+  updateProduct: (id, data) => api.put(`/products/${id}`, data),
+  deleteProduct: (id) => api.delete(`/products/${id}`),
+};
 
-export { PRICE_RANGES, PER_PAGE, filterProducts, getRelatedProducts, getProductById };
+export default productService;

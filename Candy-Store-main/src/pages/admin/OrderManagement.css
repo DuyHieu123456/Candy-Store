@@ -1,0 +1,128 @@
+/* --- CONTAINER CHÍNH --- */
+.order-management {
+    animation: fadeIn 0.4s ease-out; /* Đồng bộ hiệu ứng chuyển cảnh với trang Sản phẩm */
+}
+
+.order-management .page-header {
+    margin-bottom: 30px;
+}
+
+/* --- THANH CÔNG CỤ (TOOLBAR) --- */
+.order-management .table-toolbar {
+    background: #fff;
+    padding: 16px 24px;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+}
+
+.admin-select {
+    padding: 8px 16px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 50px; /* Kiểu dáng bo tròn Candy Funhouse */
+    font-size: 0.9rem;
+    color: var(--color-text);
+    outline: none;
+    cursor: pointer;
+    background-color: #fff;
+    transition: border-color 0.3s;
+}
+
+.admin-select:focus {
+    border-color: var(--color-primary);
+}
+
+/* --- ĐỊNH DẠNG CỘT DỮ LIỆU --- */
+.order-id {
+    font-weight: 800;
+    color: var(--color-text);
+    font-family: monospace; /* Mã đơn hàng hiển thị dạng mã số kỹ thuật */
+}
+
+.customer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-name {
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.customer-phone {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.payment-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: #f1f2f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #57606f;
+}
+
+/* --- HỆ THỐNG TRẠNG THÁI (STATUS BADGES)[cite: 1] --- */
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background-color: #fef9e7;
+    color: #f39c12; /* Màu cam cho chờ xử lý[cite: 1] */
+    border: 1px solid #f9ebea;
+}
+
+.status-completed {
+    background-color: #eafaf1;
+    color: #27ae60; /* Màu xanh cho hoàn thành[cite: 1] */
+}
+
+.status-cancelled {
+    background-color: #fdf2f2;
+    color: #e74c3c; /* Màu đỏ cho đơn hủy[cite: 1] */
+}
+
+/* --- HÀNH ĐỘNG --- */
+.btn-view-detail {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: opacity 0.2s;
+}
+
+.btn-view-detail:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .order-management .admin-table {
+        min-width: 800px; /* Đảm bảo bảng không bị quá hẹp trên màn hình nhỏ */
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,108 @@
+.cart-drawer {
+    position: fixed;
+    top: 0;
+    right: -450px; /* Ẩn bên phải */
+    width: 400px;
+    max-width: 90vw;
+    height: 100vh;
+    background: #fff;
+    z-index: 2000;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column; /* Sắp xếp các phần Header-Content-Footer theo chiều dọc */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+}
+
+.cart-drawer.open {
+    right: 0; /* Hiện giỏ hàng */
+}
+
+.cart-drawer__header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+}
+
+/* VÙNG CUỘN CHÍNH */
+.cart-drawer__content {
+    flex: 1; /* Chiếm toàn bộ khoảng trống còn lại */
+    overflow-y: auto; /* Kích hoạt thanh cuộn dọc khi danh sách kẹo dài */
+    padding: 20px;
+}
+
+/* Thanh cuộn tinh tế kiểu hiện đại */
+.cart-drawer__content::-webkit-scrollbar {
+    width: 5px;
+}
+.cart-drawer__content::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+.cart-drawer__item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.cart-drawer__item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+/* VÙNG CỐ ĐỊNH PHÍA DƯỚI */
+.cart-drawer__footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cart-drawer__footer .total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.btn-checkout {
+    background: var(--color-primary, #ff4757);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-view-cart {
+    text-align: center;
+    color: #666;
+    text-decoration: underline;
+    font-size: 0.9rem;
+}
+
+.cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1999;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+}
+
+.cart-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}

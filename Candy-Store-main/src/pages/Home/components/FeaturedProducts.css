@@ -1,37 +1,123 @@
-/* src/pages/Home/components/FeaturedProducts.css */
-.featured-section { padding: 60px 0; background: var(--color-bg); }
+/* --- CONTAINER CHÍNH --- */
+.featured-section { 
+  padding: 80px 0; 
+  background: var(--color-bg); 
+}
 
+/* --- ĐẦU MỤC (HEADER) --- */
 .featured-section__header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 32px;
-  gap: 16px;
-}
-.featured-section__title { font-size: 1.8rem; font-weight: 900; color: var(--color-text); margin-bottom: 5px; }
-.featured-section__sub   { font-size: 0.95rem; color: var(--color-text-muted); }
-
-.featured-section__view-all {
-  padding: 10px 22px;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  border-radius: var(--radius-full);
-  font-size: 0.875rem;
-  font-weight: 700;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background var(--transition), color var(--transition);
-}
-.featured-section__view-all:hover { background: var(--color-primary); color: #fff; }
-
-.featured-section__grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 40px;
   gap: 20px;
 }
 
-@media (max-width: 1024px) { .featured-section__grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 768px)  {
-  .featured-section__grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .featured-section__header { flex-direction: column; align-items: flex-start; }
+.featured-section__title-group {
+  position: relative;
+}
+
+.featured-section__title { 
+  font-size: clamp(1.8rem, 4vw, 2.4rem); 
+  font-weight: 900; 
+  color: var(--color-text); 
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+  text-transform: uppercase; /* Kiểu chữ mạnh mẽ của Funhouse */
+}
+
+/* Đường kẻ hồng đặc trưng dưới tiêu đề */
+.featured-section__divider {
+  width: 60px;
+  height: 4px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  margin-bottom: 15px;
+}
+
+.featured-section__sub { 
+  font-size: 1rem; 
+  color: #636e72; 
+  font-weight: 500;
+}
+
+/* --- NÚT XEM TẤT CẢ (VIEW ALL) --- */
+.featured-section__view-all {
+  padding: 12px 28px;
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: 50px; /* Dạng viên thuốc chuyên nghiệp[cite: 5] */
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+  /* Loại bỏ gạch dưới tuyệt đối[cite: 7] */
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}
+
+.featured-section__view-all:hover { 
+  background: var(--color-primary); 
+  color: #fff; 
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 0, 122, 0.2);
+}
+
+/* --- LƯỚI SẢN PHẨM (GRID) --- */
+.featured-section__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px; /* Tăng khoảng cách để card trông thoáng hơn[cite: 9] */
+}
+
+/* --- TRẠNG THÁI LOADING & EMPTY --- */
+.featured-loading, .featured-empty {
+  text-align: center;
+  padding: 60px 0;
+  font-weight: 600;
+  color: #888;
+}
+
+.loader-candy {
+  font-size: 3rem;
+  animation: candy-bounce 1s infinite alternate;
+  margin-bottom: 15px;
+}
+
+@keyframes candy-bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-20px); }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1100px) { 
+  .featured-section__grid { 
+    grid-template-columns: repeat(3, 1fr); 
+  } 
+}
+
+@media (max-width: 768px) {
+  .featured-section { padding: 50px 0; }
+  
+  .featured-section__grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 16px; 
+  }
+  
+  .featured-section__header { 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center;
+  }
+
+  .featured-section__divider {
+    margin: 0 auto 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-section__grid { 
+    grid-template-columns: 1fr; /* 1 cột trên điện thoại nhỏ để ảnh to rõ[cite: 9] */
+  }
 }

@@ -1,32 +1,43 @@
-const express = require('express');
-const cors = require('cors');
 require('dotenv').config();
-const { poolPromise } = require('./dbConfig');
+const express = require('express');
+const cors    = require('cors');
+const path    = require('path');
 
 const app = express();
 
-// Middleware
-app.use(cors()); // Cho phép Frontend (cổng 5173) gọi tới Backend (cổng 5000)
-app.use(express.json()); 
+// ── Middleware ─────────────────────────────────────────────
+app.use(cors({ origin: '*', credentials: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// API Endpoint: Lấy danh sách sản phẩm
-app.get('/api/products', async (req, res) => {
-    try {
-        const pool = await poolPromise;
-        // Chạy câu lệnh SQL lấy danh sách kẹo đang được bán
-        const result = await pool.request()
-            .query('SELECT * FROM Products WHERE IsActive = 1');
-        
-        // Trả kết quả về dưới dạng JSON
-        res.json(result.recordset);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Lỗi server khi lấy dữ liệu' });
-    }
+// ── Routes ─────────────────────────────────────────────────
+app.use('/api/auth',       require('./routes/auth.routes'));
+app.use('/api/products',   require('./routes/product.routes'));
+app.use('/api/categories', require('./routes/category.routes'));
+app.use('/api/brands',     require('./routes/brand.routes'));
+app.use('/api/cart',       require('./routes/cart.routes'));
+app.use('/api/orders',     require('./routes/order.routes'));
+app.use('/api/banners',    require('./routes/banner.routes'));
+
+// ── Health check ───────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.json({ message: '🍬 Candy Store API is running!', version: '1.0.0' });
 });
 
-// Khởi động server
+// ── 404 handler ────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
+
+// ── Error handler ──────────────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error('❌ Server Error:', err.message);
+  res.status(500).json({ success: false, message: 'Internal server error', error: err.message });
+});
+
+// ── Start ──────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server Backend đang chạy tại http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

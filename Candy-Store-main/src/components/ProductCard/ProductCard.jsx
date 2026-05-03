@@ -5,23 +5,29 @@ import useCart from "../../hooks/useCart";
 import "./ProductCard.css";
 
 const ProductCard = ({ product }) => {
-  const { addItem } = useCart();
+  const { addToCart, openDrawer } = useCart(); 
   const [justAdded, setJustAdded] = useState(false);
+
+  // Ảnh dự phòng chất lượng cao từ Unsplash
+  const CANDY_FALLBACK = "https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?q=80&w=400&h=400&auto=format&fit=crop";
 
   const discountPct = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
     : null;
 
   const handleAddToCart = (e) => {
-    e.preventDefault();
-    addItem(product);
+    e.preventDefault(); 
+    addToCart(product); 
     setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 1500);
+    
+    setTimeout(() => {
+      setJustAdded(false);
+      openDrawer(); 
+    }, 600);
   };
 
   return (
     <Link to={`/products/${product.id}`} className="product-card">
-      {/* ── Badges ── */}
       <div className="product-card__badges">
         {discountPct && (
           <span className="badge badge--sale">-{discountPct}%</span>
@@ -32,7 +38,6 @@ const ProductCard = ({ product }) => {
         )}
       </div>
 
-      {/* ── Wishlist ── */}
       <button
         className="product-card__wishlist"
         onClick={(e) => e.preventDefault()}
@@ -41,34 +46,30 @@ const ProductCard = ({ product }) => {
         ♡
       </button>
 
-      {/* ── Image ── */}
       <div className="product-card__img-wrap">
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            className="product-card__img"
-            loading="lazy"
-          />
-        ) : (
-          <div className="product-card__img-placeholder">
-            <span>{product.emoji || "🍬"}</span>
-          </div>
-        )}
+        <img
+          src={product.image || CANDY_FALLBACK}
+          alt={product.name}
+          className="product-card__img"
+          loading="lazy"
+          onError={(e) => {
+            e.target.onerror = null; 
+            e.target.src = CANDY_FALLBACK;
+          }}
+        />
       </div>
 
-      {/* ── Info ── */}
       <div className="product-card__info">
-        <p className="product-card__brand">{product.brand}</p>
+        <p className="product-card__brand">{product.brand || "Candy Funhouse"}</p>
         <h3 className="product-card__name">{product.name}</h3>
 
         <div className="product-card__rating">
           <span className="product-card__stars">
-            {"★".repeat(Math.round(product.rating))}
-            {"☆".repeat(5 - Math.round(product.rating))}
+            {"★".repeat(Math.round(product.rating || 0))}
+            {"☆".repeat(5 - Math.round(product.rating || 0))}
           </span>
           <span className="product-card__review-count">
-            ({product.reviewCount})
+            ({product.reviewCount || 0})
           </span>
         </div>
 

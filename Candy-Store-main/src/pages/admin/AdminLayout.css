@@ -1,0 +1,178 @@
+/* --- TỔNG THỂ HỆ THỐNG ADMIN --- */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-bg-soft); /* Sử dụng màu nền mềm mại của hệ thống[cite: 1] */
+}
+
+/* --- SIDEBAR (THANH ĐIỀU HƯỚNG BÊN LỀ) --- */
+.admin-sidebar {
+    width: 260px;
+    background-color: #2d3436; /* Màu tối chuyên nghiệp cho quản trị */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    transition: all var(--transition);
+}
+
+.admin-logo {
+    padding: 30px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-logo a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #fff;
+}
+
+.logo-icon {
+    font-size: 2rem;
+}
+
+.logo-main {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.logo-sub {
+    font-size: 0.7rem;
+    color: var(--color-primary); /* Điểm xuyết màu đỏ kẹo đặc trưng[cite: 1] */
+    font-weight: 700;
+}
+
+/* --- MENU ĐIỀU HƯỚNG --- */
+.admin-nav {
+    flex: 1;
+    padding: 24px 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+    width: 100%;
+    cursor: pointer;
+}
+
+.nav-item:hover, 
+.nav-item.active {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid var(--color-primary); /* Đánh dấu mục đang chọn[cite: 15] */
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+}
+
+/* --- SIDEBAR FOOTER --- */
+.admin-sidebar-footer {
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-home {
+    color: #00cec9;
+}
+
+.logout-btn {
+    color: #fab1a0;
+}
+
+/* --- VÙNG NỘI DUNG CHÍNH (MAIN AREA) --- */
+.admin-main {
+    flex: 1;
+    margin-left: 260px; /* Bù trừ khoảng trống cho Sidebar cố định */
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- TOPBAR (THANH CÔNG CỤ TRÊN CÙNG) --- */
+.admin-topbar {
+    height: 70px;
+    background-color: #fff;
+    border-bottom: 1px solid var(--color-border); /* Sử dụng border đồng bộ */
+    padding: 0 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+}
+
+.topbar-left h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.admin-profile-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.admin-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.admin-badge {
+    font-size: 0.7rem;
+    color: var(--color-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* --- KHÔNG GIAN NỘI DUNG (CONTENT SPACE) --- */
+.admin-content {
+    padding: 32px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
+    .admin-sidebar {
+        width: 80px;
+    }
+    
+    .logo-text, .nav-item span:not(.nav-icon) {
+        display: none; /* Ẩn chữ, chỉ hiện icon trên Tablet */
+    }
+    
+    .admin-main {
+        margin-left: 80px;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-sidebar {
+        transform: translateX(-100%); /* Ẩn sidebar trên điện thoại */
+    }
+    
+    .admin-main {
+        margin-left: 0;
+    }
+}

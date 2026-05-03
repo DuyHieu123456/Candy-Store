@@ -1,0 +1,150 @@
+/* --- BỐ CỤC TỔNG THỂ --- */
+.order-detail-admin {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.order-detail-admin .page-header {
+    margin-bottom: 24px;
+}
+
+/* --- LƯỚI QUẢN TRỊ (2 CỘT) --- */
+.order-admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px; /* Nội dung chính rộng, Sidebar thao tác cố định */
+    gap: 24px;
+    align-items: start;
+}
+
+/* --- CÁC KHỐI THÔNG TIN (CARDS) --- */
+.info-card, .items-card, .status-card, .payment-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    border: 1.5px solid var(--color-border);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.info-card h3, .items-card h3, .status-card h3, .payment-card h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- THÔNG TIN KHÁCH HÀNG --- */
+.info-content p {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    color: var(--color-text);
+}
+
+.info-content strong {
+    color: var(--color-text-muted);
+    width: 120px;
+    display: inline-block;
+}
+
+/* --- BẢNG SẢN PHẨM TRONG ĐƠN HÀNG --- */
+.order-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.order-items-table th {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid var(--color-bg-soft);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+.order-items-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--color-bg-soft);
+    vertical-align: middle;
+}
+
+.item-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+}
+
+.item-thumb {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+}
+
+.item-subtotal {
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+/* --- TỔNG KẾT HÓA ĐƠN --- */
+.order-total-summary {
+    background: var(--color-bg-soft);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    margin-top: 10px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.grand-total {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px dashed var(--color-border);
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--color-primary); /* Màu đỏ kẹo làm nổi bật tổng tiền */
+}
+
+/* --- SIDEBAR ĐIỀU KHIỂN (STATUS CONTROL)[cite: 10, 11] --- */
+.current-status {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.status-control label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--color-text-muted);
+}
+
+/* --- PHẢN HỒI RESPONSIVE --- */
+@media (max-width: 1024px) {
+    .order-admin-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .order-sidebar-admin {
+        position: static;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

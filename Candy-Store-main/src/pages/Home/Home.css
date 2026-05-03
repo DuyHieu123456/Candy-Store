@@ -1,0 +1,45 @@
+/* --- TRANG CHỦ FUNHOUSE --- */
+.home-funhouse {
+  background-color: var(--color-bg); /* Nền trắng sạch sẽ[cite: 15, 17] */
+  min-height: 100vh;
+}
+
+/* Tinh chỉnh khoảng cách giữa các khối nội dung */
+.home-section {
+  padding: 60px 0; /* Tạo khoảng thở cho giao diện chuyên nghiệp */
+  overflow: hidden;
+}
+
+/* Phần Hero Banner sát mép trên */
+.home-hero {
+  padding-top: 0;
+}
+
+/* Hiệu ứng nền hồng nhạt cho phần Flash Sale để làm nổi bật[cite: 15] */
+.home-flash-sale {
+  background-color: var(--color-bg-soft);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Tiêu đề chung cho các Section (nếu có dùng trong các component con) */
+.home-section__title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--color-text);
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+
+/* Responsive cho thiết bị di động */
+@media (max-width: 768px) {
+  .home-section {
+    padding: 40px 0;
+  }
+  
+  .home-section__title {
+    font-size: 1.8rem;
+  }
+}

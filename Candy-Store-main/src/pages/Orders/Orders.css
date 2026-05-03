@@ -1,0 +1,179 @@
+/* --- CONTAINER CHÍNH --- */
+.orders-page {
+    padding: 40px 16px 80px;
+    min-height: 70vh;
+}
+
+.orders-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.orders-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-text);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.orders-header p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+/* --- TRẠNG THÁI TẢI & TRỐNG --- */
+.orders-loader {
+    text-align: center;
+    padding: 100px 0;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.orders-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    border: 1.5px solid var(--color-border);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+/* --- DANH SÁCH ĐƠN HÀNG[cite: 27] --- */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.order-card {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    border: 1.5px solid var(--color-border);
+    padding: 24px;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.order-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* --- HEADER THẺ ĐƠN HÀNG[cite: 27] --- */
+.order-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 16px;
+}
+
+.order-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order-id {
+    font-weight: 800;
+    color: var(--color-text);
+    font-size: 1.05rem;
+}
+
+.order-date {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+/* --- NHÃN TRẠNG THÁI (STATUS BADGES)[cite: 21, 27] --- */
+.order-status {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.status--pending { background: #fff9db; color: #f59f00; }     /* Vàng */
+.status--confirmed { background: #e3faf3; color: #0ca678; }   /* Xanh lá nhẹ */
+.status--shipping { background: #e7f5ff; color: #1c7ed6; }    /* Xanh dương */
+.status--delivered { background: #ebfbee; color: #37b24d; }   /* Xanh lá đậm */
+.status--cancelled { background: #fff5f5; color: #f03e3e; }   /* Đỏ[cite: 27] */
+
+/* --- NỘI DUNG THẺ ĐƠN HÀNG[cite: 27] --- */
+.order-card__body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.order-total {
+    display: flex;
+    flex-direction: column;
+}
+
+.total-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.total-value {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--color-primary); /* Màu đỏ chủ đạo của kẹo[cite: 27] */
+}
+
+.order-payment {
+    font-size: 0.85rem;
+    color: var(--color-text);
+}
+
+/* --- HÀNH ĐỘNG[cite: 27] --- */
+.order-card__actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-cancel-order {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color var(--transition);
+}
+
+.btn-cancel-order:hover {
+    color: #f03e3e;
+}
+
+/* --- RESPONSIVE[cite: 27] --- */
+@media (max-width: 600px) {
+    .order-card__header {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .order-card__body {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .order-card__actions {
+        justify-content: space-between;
+        width: 100%;
+    }
+}

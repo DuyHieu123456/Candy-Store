@@ -2,9 +2,11 @@
 -- CANDY STORE DATABASE SCHEMA + SEED DATA
 -- Database: CandyStoreDB (SQL Server)
 -- ============================================================
-CREATE DATABASE CandyStoreDB;
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'CandyStoreDB')
+BEGIN
+    CREATE DATABASE CandyStoreDB;
+END
 GO
-
 USE CandyStoreDB;
 GO
 
@@ -33,8 +35,10 @@ CREATE TABLE Users (
     password    NVARCHAR(255)  NOT NULL,
     phone       NVARCHAR(20)   NULL,
     address     NVARCHAR(500)  NULL,
-    role        NVARCHAR(20)   NOT NULL DEFAULT 'customer',  -- 'customer' | 'admin'
+    role        NVARCHAR(20)   NOT NULL DEFAULT 'customer',
     avatar      NVARCHAR(500)  NULL,
+    reset_token  NVARCHAR(255)  NULL,
+    reset_expiry DATETIME       NULL,
     created_at  DATETIME       DEFAULT GETDATE(),
     updated_at  DATETIME       DEFAULT GETDATE()
 );
@@ -230,8 +234,8 @@ INSERT INTO Categories (name, slug, description, image, parent_id, sort_order) V
 -- Parent categories
 ('Chocolate',       'chocolate',       'Rich chocolate treats from around the world',     'https://images.unsplash.com/photo-1511381939415-e44015466834?w=400', NULL, 1),
 ('Gummy & Chewy',   'gummy-chewy',     'Bears, worms, sour belts and more chewy delights','https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=400', NULL, 2),
-('Hard Candy',      'hard-candy',      'Classic hard candies and lollipops',               'https://images.unsplash.com/photo-1559715541-5daf5b971bb3?w=400', NULL, 3),
-('Sour Candy',      'sour-candy',      'Pucker up! The sourest candies ever made',         'https://images.unsplash.com/photo-1600881961012-56c5c2d64ce9?w=400', NULL, 4),
+('Hard Candy',      'hard-candy',      'Classic hard candies and lollipops',               'https://images.unsplash.com/photo-1575224300306-1b8da36134ec?w=400', NULL, 3),
+('Sour Candy',      'sour-candy',      'Pucker up! The sourest candies ever made',         'https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400', NULL, 4),
 ('Novelty Candy',   'novelty-candy',   'Fun, unique and pop-culture inspired treats',      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=400', NULL, 5),
 ('Bulk Candy',      'bulk-candy',      'Buy your favorites in bulk and save big',          'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400', NULL, 6),
 ('Retro Candy',     'retro-candy',     'Nostalgic classics from the good old days',        'https://images.unsplash.com/photo-1527515545081-5db817172677?w=400', NULL, 7),
@@ -577,3 +581,5 @@ GO
 PRINT '✅ CandyStoreDB Schema + Seed Data created successfully!';
 PRINT '📊 Tables: Users(4), Categories(8), Brands(10), Products(30), Reviews(10), Banners(4)';
 GO
+
+
