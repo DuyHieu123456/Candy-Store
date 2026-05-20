@@ -50,7 +50,7 @@ export async function getRelatedProducts(productId, category, limit = 4) {
 /**
  * 3. Logic lọc sản phẩm.
  */
-export async function filterProducts({ category, priceRange, search, sale, page = 1 }) {
+export async function filterProducts({ category, priceRange, search, sale, country, dietary, page = 1 }) {
   let results = await fetchAndNormalizeProducts();
 
   if (search) {
@@ -66,6 +66,14 @@ export async function filterProducts({ category, priceRange, search, sale, page 
 
   if (sale) {
     results = results.filter((p) => p.isSale);
+  }
+
+  if (country) {
+    results = results.filter((p) => p.country === country);
+  }
+
+  if (dietary) {
+    results = results.filter((p) => p.dietary && p.dietary.includes(dietary));
   }
 
   if (priceRange !== null && priceRange !== undefined) {

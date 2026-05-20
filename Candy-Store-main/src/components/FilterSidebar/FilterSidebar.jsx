@@ -1,19 +1,14 @@
-import { CATEGORIES } from "../../data/categories"; // Danh mục cố định hoặc từ API
-import { PRICE_RANGES } from "../../services/productService"; // Hằng số giá đã tối ưu
-import "./FilterSidebar.css"; // Tích hợp phong cách bố cục linh hoạt
+import { CATEGORIES } from "../../data/categories";
+import { COUNTRIES, DIETARY_OPTIONS } from "../../data/products";
+import { PRICE_RANGES } from "../../services/productService";
+import "./FilterSidebar.css";
 
-/**
- * FilterSidebar - Bộ lọc kẹo đa năng.
- * Cho phép khách hàng tinh chỉnh danh sách kẹo theo loại, túi tiền và ưu đãi[cite: 40].
- */
-const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) => {
-  
-  // Xác định trạng thái "Tất cả": Khi không chọn loại kẹo cụ thể và không lọc giảm giá.
+const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onCountry, onDietary, onReset }) => {
   const isAllActive = !filters.category && !filters.sale;
 
   return (
     <aside className="filter-sidebar">
-      {/* ── Phần 1: Phân loại kẹo theo danh mục ── */}
+      {/* ── Danh mục ── */}
       <div className="filter-sidebar__section">
         <h3 className="filter-sidebar__title">📂 DANH MỤC KẸO</h3>
         <ul className="filter-sidebar__list">
@@ -26,14 +21,13 @@ const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) =
             </button>
           </li>
 
-          {/* Duyệt qua danh sách danh mục để tạo các nút lọc nhanh */}
           {CATEGORIES.filter((c) => c.slug !== "sale").map((cat) => (
             <li key={cat.id}>
               <button
                 className={`filter-sidebar__item ${filters.category === cat.slug ? "filter-sidebar__item--active" : ""}`}
                 onClick={() => onCategory(cat.slug)}
               >
-                <span className="item-emoji">{cat.emoji}</span> 
+                <span className="item-emoji">{cat.emoji}</span>
                 <span className="item-name">{cat.name}</span>
                 {cat.count > 0 && (
                   <span className="filter-sidebar__count">{cat.count}</span>
@@ -42,12 +36,9 @@ const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) =
             </li>
           ))}
 
-          {/* Mục "Khuyến Mãi" được thiết kế nổi bật để kích thích mua sắm */}
           <li>
             <button
-              className={`filter-sidebar__item filter-sidebar__item--hot ${
-                filters.sale ? "filter-sidebar__item--active" : ""
-              }`}
+              className={`filter-sidebar__item filter-sidebar__item--hot ${filters.sale ? "filter-sidebar__item--active" : ""}`}
               onClick={() => onSale(!filters.sale)}
             >
               <span className="item-emoji">🏷️</span> Kẹo Giảm Giá 🔥
@@ -56,7 +47,41 @@ const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) =
         </ul>
       </div>
 
-      {/* ── Phần 2: Lọc theo ngân sách (Price Ranges) ── */}
+      {/* ── Xuất xứ ── */}
+      <div className="filter-sidebar__section">
+        <h3 className="filter-sidebar__title">🌍 XUẤT XỨ</h3>
+        <ul className="filter-sidebar__list">
+          {COUNTRIES.map((c) => (
+            <li key={c.slug}>
+              <button
+                className={`filter-sidebar__item ${filters.country === c.slug ? "filter-sidebar__item--active" : ""}`}
+                onClick={() => onCountry(filters.country === c.slug ? "" : c.slug)}
+              >
+                <span className="item-emoji">{c.emoji}</span> {c.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* ── Chế độ ăn ── */}
+      <div className="filter-sidebar__section">
+        <h3 className="filter-sidebar__title">🥗 CHẾ ĐỘ ĂN</h3>
+        <ul className="filter-sidebar__list">
+          {DIETARY_OPTIONS.map((d) => (
+            <li key={d.slug}>
+              <button
+                className={`filter-sidebar__item ${filters.dietary === d.slug ? "filter-sidebar__item--active" : ""}`}
+                onClick={() => onDietary(filters.dietary === d.slug ? "" : d.slug)}
+              >
+                <span className="item-emoji">{d.emoji}</span> {d.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* ── Khoảng giá ── */}
       <div className="filter-sidebar__section">
         <h3 className="filter-sidebar__title">💰 KHOẢNG GIÁ</h3>
         <ul className="filter-sidebar__list">
@@ -64,7 +89,6 @@ const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) =
             <li key={idx}>
               <button
                 className={`filter-sidebar__item ${filters.priceRange === idx ? "filter-sidebar__item--active" : ""}`}
-                // Logic Toggle: Nhấn vào khoảng giá đang chọn sẽ bỏ lọc giá đó.
                 onClick={() => onPriceRange(filters.priceRange === idx ? null : idx)}
               >
                 {range.label}
@@ -74,13 +98,9 @@ const FilterSidebar = ({ filters, onCategory, onPriceRange, onSale, onReset }) =
         </ul>
       </div>
 
-      {/* ── Phần 3: Thiết lập lại (Reset) ── */}
+      {/* ── Reset ── */}
       <div className="filter-sidebar__footer">
-        <button 
-          className="filter-sidebar__reset" 
-          onClick={onReset}
-          title="Xóa tất cả các bộ lọc hiện tại"
-        >
+        <button className="filter-sidebar__reset" onClick={onReset}>
           🗑️ LÀM MỚI BỘ LỌC
         </button>
       </div>

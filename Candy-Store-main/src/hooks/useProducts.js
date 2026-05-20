@@ -1,36 +1,28 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { filterProducts } from "../services/productService"; // Hàm đã tối ưu ở bước trước
+import { filterProducts } from "../services/productService";
 
-/**
- * useProducts Hook - Quản lý trạng thái kẹo dựa trên URL.
- * Đồng bộ hóa bộ lọc (Lọc theo tên, loại, giá, khuyến mãi) vào SearchParams.
- */
 export default function useProducts() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // 1. Trích xuất bộ lọc trực tiếp từ URL
   const category   = searchParams.get("category") || "";
   const search     = searchParams.get("search") || "";
   const sale       = searchParams.get("sale") === "true";
   const page       = Number(searchParams.get("page")) || 1;
-  const priceRange = searchParams.get("priceRange") !== null 
-                     ? Number(searchParams.get("priceRange")) 
+  const country    = searchParams.get("country") || "";
+  const dietary    = searchParams.get("dietary") || "";
+  const priceRange = searchParams.get("priceRange") !== null
+                     ? Number(searchParams.get("priceRange"))
                      : null;
 
-  // 2. State lưu trữ kết quả trả về từ SQL Server
-  const [result, setResult] = useState({ 
-    products: [], 
-    totalPages: 1, 
-    totalCount: 0, 
-    currentPage: 1 
+  const [result, setResult] = useState({
+    products: [],
+    totalPages: 1,
+    totalCount: 0,
+    currentPage: 1
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  /**
-   * Cập nhật URL Params thông minh.
-   * Tự động xóa các tham số trống để URL luôn sạch sẽ.
-   */
   const updateParams = useCallback(
     (updates) => {
       setSearchParams((prev) => {
@@ -48,8 +40,6 @@ export default function useProducts() {
     [setSearchParams]
   );
 
-  // ── CÁC HÀM ĐIỀU KHIỂN BỘ LỌC ──[cite: 42]
-  
   const setCategory = useCallback(
     (cat) => updateParams({ category: cat, sale: null, page: null }),
     [updateParams]
@@ -75,34 +65,41 @@ export default function useProducts() {
     [updateParams]
   );
 
+  const setCountry = useCallback(
+    (c) => updateParams({ country: c || null, page: null }),
+    [updateParams]
+  );
+
+  const setDietary = useCallback(
+    (d) => updateParams({ dietary: d || null, page: null }),
+    [updateParams]
+  );
+
   const resetFilters = useCallback(() => {
-    setSearchParams({}); // Xóa sạch mọi bộ lọc trên URL[cite: 42]
+    setSearchParams({});
   }, [setSearchParams]);
 
-  /**
-   * 3. Tự động tải dữ liệu khi URL thay đổi.
-   * Kết nối với logic filterProducts trong productService[cite: 31, 42].
-   */
   useEffect(() => {
-    let isMounted = true; 
+    let isMounted = true;
 
     const loadData = async () => {
       setIsLoading(true);
       try {
-        // Gọi hàm lọc đã được tối ưu hóa tên thuộc tính (image_url, stock...)[cite: 31, 42]
-        const data = await filterProducts({ 
-          category, 
-          priceRange, 
-          search, 
-          sale, 
-          page 
+        const data = await filterProducts({
+          category,
+          priceRange,
+          search,
+          sale,
+          country,
+          dietary,
+          page
         });
 
         if (isMounted) {
           setResult(data);
         }
       } catch (error) {
-        console.error("Lỗi Store: Không thể lấy danh sách kẹo từ Database", error);
+        console.error("Lỗi Store: Không thể lấy danh sách kẹo", error);
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -111,17 +108,19 @@ export default function useProducts() {
     loadData();
 
     return () => { isMounted = false; };
-  }, [category, priceRange, search, sale, page]); // Lắng nghe mọi thay đổi từ URL[cite: 42]
+  }, [category, priceRange, search, sale, country, dietary, page]);
 
   return {
-    ...result, // Rải products, totalPages... cho Products.jsx sử dụng[cite: 42]
+    ...result,
     isLoading,
-    filters: { category, priceRange, search, sale },
+    filters: { category, priceRange, search, sale, country, dietary },
     setCategory,
     setSearch,
     setSale,
     setPage,
     setPriceRange,
+    setCountry,
+    setDietary,
     resetFilters,
   };
 }

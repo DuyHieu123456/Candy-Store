@@ -2,11 +2,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import useCart from "../../hooks/useCart";
+import useWishlist from "../../hooks/useWishlist";
 import "./ProductCard.css";
 
 const ProductCard = ({ product }) => {
-  const { addToCart, openDrawer } = useCart(); 
+  const { addToCart, openDrawer } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const [justAdded, setJustAdded] = useState(false);
+
+  const inWishlist = isInWishlist(product.id);
 
   // Ảnh dự phòng chất lượng cao từ Unsplash
   const CANDY_FALLBACK = "https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?q=80&w=400&h=400&auto=format&fit=crop";
@@ -39,11 +43,11 @@ const ProductCard = ({ product }) => {
       </div>
 
       <button
-        className="product-card__wishlist"
-        onClick={(e) => e.preventDefault()}
-        aria-label="Thêm vào yêu thích"
+        className={`product-card__wishlist ${inWishlist ? "product-card__wishlist--active" : ""}`}
+        onClick={(e) => { e.preventDefault(); toggleWishlist(product); }}
+        aria-label={inWishlist ? "Bỏ yêu thích" : "Thêm vào yêu thích"}
       >
-        ♡
+        {inWishlist ? "♥" : "♡"}
       </button>
 
       <div className="product-card__img-wrap">

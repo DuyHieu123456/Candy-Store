@@ -51,7 +51,7 @@ api.interceptors.response.use(
       }
 
       // Xử lý lỗi 403 (Forbidden) - Không có quyền truy cập vào khu vực Admin
-      if (response.status === 3) {
+      if (response.status === 403) {
         console.error("Bạn không có quyền truy cập vào khu vực này!");
       }
     } else {

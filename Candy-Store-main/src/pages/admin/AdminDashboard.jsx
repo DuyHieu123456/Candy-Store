@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import productService from "../../services/productService";
 import orderService from "../../services/orderService";
 import { formatPrice } from "../../utils/formatPrice";
-import "./AdminDashboard.jsx"; // File CSS sẽ được khởi tạo ở bước tiếp theo
+import "./AdminDashboard.css";
 
 /**
  * AdminDashboard - Bảng điều khiển trung tâm

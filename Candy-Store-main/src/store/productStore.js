@@ -5,18 +5,21 @@ import { filterProducts } from "../services/productService";
 export default function useProducts() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const category = searchParams.get("category") || "";
-  const search = searchParams.get("search") || "";
-  const sale = searchParams.get("sale") === "true";
-  const page = Number(searchParams.get("page")) || 1;
-  const [priceRange, setPriceRangeState] = useState(null);
+  const category   = searchParams.get("category") || "";
+  const search     = searchParams.get("search") || "";
+  const sale       = searchParams.get("sale") === "true";
+  const page       = Number(searchParams.get("page")) || 1;
+  const country    = searchParams.get("country") || "";
+  const dietary    = searchParams.get("dietary") || "";
+  const priceRange = searchParams.get("priceRange") !== null
+                     ? Number(searchParams.get("priceRange"))
+                     : null;
 
-  // 1. Thêm State để chứa dữ liệu bất đồng bộ từ SQL Server
-  const [result, setResult] = useState({ 
-    products: [], 
-    totalPages: 1, 
-    totalCount: 0, 
-    currentPage: 1 
+  const [result, setResult] = useState({
+    products: [],
+    totalPages: 1,
+    totalCount: 0,
+    currentPage: 1
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -54,54 +57,54 @@ export default function useProducts() {
     [updateParams]
   );
   const setPriceRange = useCallback(
-    (idx) => {
-      setPriceRangeState(idx);
-      updateParams({ page: null });
-    },
+    (idx) => updateParams({ priceRange: idx, page: null }),
+    [updateParams]
+  );
+  const setCountry = useCallback(
+    (c) => updateParams({ country: c || null, page: null }),
+    [updateParams]
+  );
+  const setDietary = useCallback(
+    (d) => updateParams({ dietary: d || null, page: null }),
     [updateParams]
   );
 
   const resetFilters = useCallback(() => {
     setSearchParams({});
-    setPriceRangeState(null);
   }, [setSearchParams]);
 
-  // 2. Thay thế useMemo bằng useEffect để gọi hàm async
   useEffect(() => {
-    let isMounted = true; // Biến cờ để tránh lỗi memory leak khi component bị unmount
+    let isMounted = true;
 
     const loadData = async () => {
       setIsLoading(true);
       try {
-        const data = await filterProducts({ category, priceRange, search, sale, page });
+        const data = await filterProducts({ category, priceRange, search, sale, country, dietary, page });
         if (isMounted) {
           setResult(data);
         }
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu cho Store:", error);
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        if (isMounted) setIsLoading(false);
       }
     };
 
     loadData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [category, priceRange, search, sale, page]);
+    return () => { isMounted = false; };
+  }, [category, priceRange, search, sale, country, dietary, page]);
 
   return {
-    ...result, // Rải products, totalPages... ra cho giao diện hứng
-    isLoading, // Trả thêm trạng thái loading nếu giao diện cần dùng để hiện xoay xoay
-    filters: { category, priceRange, search, sale },
+    ...result,
+    isLoading,
+    filters: { category, priceRange, search, sale, country, dietary },
     setCategory,
     setSearch,
     setSale,
     setPage,
     setPriceRange,
+    setCountry,
+    setDietary,
     resetFilters,
   };
 }

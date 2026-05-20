@@ -1,69 +1,80 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import ErrorBoundary from "../components/ErrorBoundary/ErrorBoundary";
+import Loader from "../components/Loader/Loader";
 
-// ── CUSTOMER LAYOUT & PAGES ──
-import MainLayout     from "../layouts/MainLayout";
-import Home           from "../pages/Home/Home.jsx";
-import Products       from "../pages/Products/Products.jsx";
-import ProductDetail  from "../pages/ProductDetail/ProductDetail.jsx";
-import Cart           from "../pages/Cart/Cart.jsx";
-import Checkout       from "../pages/Checkout/Checkout.jsx";
-import OrderHistory   from "../pages/Orders/OrderHistory.jsx";
-import OrderDetail    from "../pages/Orders/OrderDetail.jsx";
+// ── Eager load (layout + home) ──
+import MainLayout from "../layouts/MainLayout";
+import Home from "../pages/Home/Home.jsx";
 
-// ── AUTH PAGES ──[cite: 17]
-import Login          from "../pages/Auth/Login.jsx";
-import Register       from "../pages/Auth/Register.jsx";
-import ForgotPassword from "../pages/Auth/ForgotPassword.jsx";
+// ── Lazy load pages ──
+const Products       = lazy(() => import("../pages/Products/Products.jsx"));
+const ProductDetail  = lazy(() => import("../pages/ProductDetail/ProductDetail.jsx"));
+const Cart           = lazy(() => import("../pages/Cart/Cart.jsx"));
+const Checkout       = lazy(() => import("../pages/Checkout/Checkout.jsx"));
+const OrderHistory   = lazy(() => import("../pages/Orders/OrderHistory.jsx"));
+const OrderDetail    = lazy(() => import("../pages/Orders/OrderDetail.jsx"));
+const Wishlist       = lazy(() => import("../pages/Wishlist/Wishlist.jsx"));
+const Profile        = lazy(() => import("../pages/Profile/Profile.jsx"));
+const NotFound       = lazy(() => import("../pages/NotFound/NotFound.jsx"));
 
-// ── ADMIN LAYOUT & PAGES ── (Tích hợp mới dựa trên kế hoạch)
-import AdminLayout        from "../pages/Admin/AdminLayout.jsx";
-import AdminDashboard     from "../pages/Admin/AdminDashboard.jsx";
-import ProductManagement  from "../pages/Admin/ProductManagement.jsx";
-import ProductEdit        from "../pages/Admin/ProductEdit.jsx";
-import OrderManagement    from "../pages/Admin/OrderManagement.jsx";
-import OrderDetailAdmin   from "../pages/Admin/OrderDetailAdmin.jsx";
+const Login          = lazy(() => import("../pages/Auth/Login.jsx"));
+const Register       = lazy(() => import("../pages/Auth/Register.jsx"));
+const ForgotPassword = lazy(() => import("../pages/Auth/ForgotPassword.jsx"));
+
+const AdminLayout       = lazy(() => import("../pages/admin/AdminLayout.jsx"));
+const AdminDashboard    = lazy(() => import("../pages/admin/AdminDashboard.jsx"));
+const ProductManagement = lazy(() => import("../pages/admin/ProductManagement.jsx"));
+const ProductEdit       = lazy(() => import("../pages/admin/ProductEdit.jsx"));
+const OrderManagement   = lazy(() => import("../pages/admin/OrderManagement.jsx"));
+const OrderDetailAdmin  = lazy(() => import("../pages/admin/OrderDetailAdmin.jsx"));
+
+const Lazy = ({ children }) => (
+  <Suspense fallback={<Loader text="Đang tải trang..." />}>
+    {children}
+  </Suspense>
+);
 
 const router = createBrowserRouter([
-  // 1. Nhánh dành cho khách hàng (Customer Routes)[cite: 17]
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorBoundary><NotFound /></ErrorBoundary>,
     children: [
       { index: true, element: <Home /> },
-      { path: "products",     element: <Products /> },
-      { path: "products/:id", element: <ProductDetail /> },
-      { path: "cart",         element: <Cart /> },
-      { path: "checkout",     element: <Checkout /> },
-      { path: "orders",       element: <OrderHistory /> },
-      { path: "orders/:id",   element: <OrderDetail /> },
-      
+      { path: "products",     element: <Lazy><Products /></Lazy> },
+      { path: "products/:id", element: <Lazy><ProductDetail /></Lazy> },
+      { path: "cart",         element: <Lazy><Cart /></Lazy> },
+      { path: "checkout",     element: <Lazy><Checkout /></Lazy> },
+      { path: "orders",       element: <Lazy><OrderHistory /></Lazy> },
+      { path: "orders/:id",   element: <Lazy><OrderDetail /></Lazy> },
+      { path: "wishlist",     element: <Lazy><Wishlist /></Lazy> },
+      { path: "profile",      element: <Lazy><Profile /></Lazy> },
+
       {
         path: "auth",
         children: [
-          { path: "login",           element: <Login /> },
-          { path: "register",        element: <Register /> },
-          { path: "forgot-password", element: <ForgotPassword /> },
+          { path: "login",           element: <Lazy><Login /></Lazy> },
+          { path: "register",        element: <Lazy><Register /></Lazy> },
+          { path: "forgot-password", element: <Lazy><ForgotPassword /></Lazy> },
         ]
       },
+
+      { path: "*", element: <Lazy><NotFound /></Lazy> },
     ],
   },
 
-  // 2. Nhánh dành cho quản trị viên (Admin Routes)
   {
     path: "/admin",
-    element: <AdminLayout />, // Layout bảo mật dành riêng cho Admin
+    element: <Lazy><AdminLayout /></Lazy>,
     children: [
-      { index: true, element: <Navigate to="dashboard" replace /> }, // Chuyển hướng mặc định
-      { path: "dashboard", element: <AdminDashboard /> },
-      
-      // Quản lý sản phẩm
-      { path: "products", element: <ProductManagement /> },
-      { path: "products/add", element: <ProductEdit /> }, // Chế độ thêm mới
-      { path: "products/edit/:id", element: <ProductEdit /> }, // Chế độ chỉnh sửa
-      
-      // Quản lý đơn hàng
-      { path: "orders", element: <OrderManagement /> },
-      { path: "orders/:id", element: <OrderDetailAdmin /> },
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <Lazy><AdminDashboard /></Lazy> },
+      { path: "products", element: <Lazy><ProductManagement /></Lazy> },
+      { path: "products/add", element: <Lazy><ProductEdit /></Lazy> },
+      { path: "products/edit/:id", element: <Lazy><ProductEdit /></Lazy> },
+      { path: "orders", element: <Lazy><OrderManagement /></Lazy> },
+      { path: "orders/:id", element: <Lazy><OrderDetailAdmin /></Lazy> },
     ],
   },
 ]);

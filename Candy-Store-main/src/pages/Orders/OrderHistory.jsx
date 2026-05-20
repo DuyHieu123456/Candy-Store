@@ -34,7 +34,7 @@ const OrderHistory = () => {
                     {orders.map(order => (
                         <div key={order.id} className="order-item-card">
                             <div className="order-info">
-                                <h3>Mã đơn: {order.order_number}</h3>[cite: 15]
+                                <h3>Mã đơn: {order.order_number}</h3>
                                 <p>Ngày đặt: {new Date(order.created_at).toLocaleDateString('vi-VN')}</p>
                                 <p>Trạng thái: <span className={`status-${order.status}`}>{order.status}</span></p>
                             </div>

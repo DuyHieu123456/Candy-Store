@@ -32,7 +32,7 @@ const OrderDetail = () => {
     const fetchOrderDetail = async () => {
       try {
         setLoading(true);
-        const res = await orderService.getOrderById(id);
+        const res = await orderService.getById(id);
         if (res.success) {
           setOrder(res.data);
         }

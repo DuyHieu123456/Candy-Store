@@ -25,6 +25,8 @@ const Products = () => {
     setSale,
     setPage,
     setPriceRange,
+    setCountry,
+    setDietary,
     resetFilters,
   } = useProducts();
 
@@ -100,6 +102,8 @@ const Products = () => {
               onCategory={handleFilterAction(setCategory)}
               onPriceRange={handleFilterAction(setPriceRange)}
               onSale={handleFilterAction(setSale)}
+              onCountry={handleFilterAction(setCountry)}
+              onDietary={handleFilterAction(setDietary)}
               onReset={handleFilterAction(resetFilters)}
             />
           </aside>
@@ -114,6 +118,8 @@ const Products = () => {
               onCategory={setCategory}
               onPriceRange={setPriceRange}
               onSale={setSale}
+              onCountry={setCountry}
+              onDietary={setDietary}
               onReset={resetFilters}
             />
           </aside>
