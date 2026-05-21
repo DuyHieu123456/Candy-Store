@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { filterProducts } from "../services/productService";
+import { fetchAndNormalizeProducts, PRICE_RANGES, PER_PAGE } from "../services/productService";
 
 export default function useProducts() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,12 +15,7 @@ export default function useProducts() {
                      ? Number(searchParams.get("priceRange"))
                      : null;
 
-  const [result, setResult] = useState({
-    products: [],
-    totalPages: 1,
-    totalCount: 0,
-    currentPage: 1
-  });
+  const [allProducts, setAllProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const updateParams = useCallback(
@@ -79,9 +74,9 @@ export default function useProducts() {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        const data = await filterProducts({ category, priceRange, search, sale, country, dietary, page });
+        const products = await fetchAndNormalizeProducts();
         if (isMounted) {
-          setResult(data);
+          setAllProducts(products);
         }
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu cho Store:", error);
@@ -92,10 +87,52 @@ export default function useProducts() {
 
     loadData();
     return () => { isMounted = false; };
-  }, [category, priceRange, search, sale, country, dietary, page]);
+  }, []);
+
+  const filtered = useMemo(() => {
+    let results = [...allProducts];
+
+    if (search) {
+      const q = search.toLowerCase();
+      results = results.filter(
+        (p) => p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
+      );
+    }
+
+    if (category) {
+      results = results.filter((p) => p.category_slug === category);
+    }
+
+    if (sale) {
+      results = results.filter((p) => p.isSale);
+    }
+
+    if (country) {
+      results = results.filter((p) => p.country === country);
+    }
+
+    if (dietary) {
+      results = results.filter((p) => p.dietary && p.dietary.includes(dietary));
+    }
+
+    if (priceRange !== null && priceRange !== undefined) {
+      const range = PRICE_RANGES[priceRange];
+      if (range) {
+        results = results.filter((p) => p.price >= range.min && p.price < range.max);
+      }
+    }
+
+    const totalCount = results.length;
+    const totalPages = Math.max(1, Math.ceil(totalCount / PER_PAGE));
+    const safePage = Math.min(page, totalPages);
+    const start = (safePage - 1) * PER_PAGE;
+    const products = results.slice(start, start + PER_PAGE);
+
+    return { products, totalPages, totalCount, currentPage: safePage };
+  }, [allProducts, search, category, sale, country, dietary, priceRange, page]);
 
   return {
-    ...result,
+    ...filtered,
     isLoading,
     filters: { category, priceRange, search, sale, country, dietary },
     setCategory,

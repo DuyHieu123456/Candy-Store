@@ -23,6 +23,8 @@ export async function fetchAndNormalizeProducts() {
       category_name: p.category_name || "",
       brand: p.brand_name || "",
       brand_slug: p.brand_slug || "",
+      country: p.country || "",
+      dietary: p.dietary ? (typeof p.dietary === 'string' ? JSON.parse(p.dietary) : p.dietary) : [],
       price: p.sale_price || p.price,
       originalPrice: p.sale_price ? p.price : null,
       stock: p.stock || 0,

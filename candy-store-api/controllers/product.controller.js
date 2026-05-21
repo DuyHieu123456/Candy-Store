@@ -77,7 +77,7 @@ const getProducts = async (req, res) => {
     const result = await request2.query(`
       SELECT p.id, p.name, p.slug, p.short_desc, p.price, p.sale_price,
              p.stock, p.images, p.is_featured, p.is_new, p.avg_rating,
-             p.review_count, p.sold_count, p.created_at,
+             p.review_count, p.sold_count, p.created_at, p.country, p.dietary,
              c.name AS category_name, c.slug AS category_slug,
              b.name AS brand_name,    b.slug AS brand_slug
       FROM Products p
