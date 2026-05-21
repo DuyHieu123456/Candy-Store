@@ -1,6 +1,5 @@
-import api from './api'; // Import instance axios đã cấu hình
+import api from './api';
 
-// ── CẤU HÌNH HẰNG SỐ ──
 export const PRICE_RANGES = [
   { label: "Dưới 50K", min: 0, max: 50000 },
   { label: "50K - 100K", min: 50000, max: 100000 },
@@ -10,25 +9,32 @@ export const PRICE_RANGES = [
 
 export const PER_PAGE = 8;
 
-/**
- * 1. Hàm nội bộ: Gọi API và đồng bộ hóa dữ liệu từ SQL Server.
- */
 export async function fetchAndNormalizeProducts() {
   try {
-    const response = await api.get('/products');
+    const response = await api.get('/products', { params: { limit: 100 } });
     const dbProducts = response.data.data || [];
 
     return dbProducts.map(p => ({
-      id: p.Id || p.id,
-      name: p.Name || p.name,
-      category_id: p.CategoryId || p.category_id,
-      price: p.Price || p.price,
-      stock: p.Stock || p.stock || 0,
-      brand: p.BrandName || "",
-      isSale: p.IsFeatured || p.is_featured,
-      image_url: p.ImageUrl || p.image || "https://via.placeholder.com/150",
-      description: p.Description || p.description || "",
-      slug: p.Slug || p.slug
+      id: p.id,
+      name: p.name,
+      slug: p.slug,
+      category_id: p.category_id,
+      category_slug: p.category_slug || "",
+      category_name: p.category_name || "",
+      brand: p.brand_name || "",
+      brand_slug: p.brand_slug || "",
+      price: p.sale_price || p.price,
+      originalPrice: p.sale_price ? p.price : null,
+      stock: p.stock || 0,
+      isSale: !!p.sale_price,
+      isNew: !!p.is_new,
+      isBestSeller: !!p.is_featured,
+      image_url: p.images ? JSON.parse(p.images)[0] : null,
+      image: p.images ? JSON.parse(p.images)[0] : null,
+      description: p.short_desc || p.description || "",
+      rating: p.avg_rating || 0,
+      reviewCount: p.review_count || 0,
+      soldCount: p.sold_count || 0,
     }));
   } catch (error) {
     console.error("Lỗi khi tải dữ liệu từ Database:", error);
@@ -36,32 +42,25 @@ export async function fetchAndNormalizeProducts() {
   }
 }
 
-/**
- * 2. Lấy sản phẩm liên quan.
- * Xuất bản định danh để sửa lỗi "does not provide an export named 'getRelatedProducts'".
- */
 export async function getRelatedProducts(productId, category, limit = 4) {
   const products = await fetchAndNormalizeProducts();
   return products
-    .filter((p) => String(p.category_id) === String(category) && p.id !== Number(productId))
+    .filter((p) => p.category_slug === category && p.id !== Number(productId))
     .slice(0, limit);
 }
 
-/**
- * 3. Logic lọc sản phẩm.
- */
 export async function filterProducts({ category, priceRange, search, sale, country, dietary, page = 1 }) {
   let results = await fetchAndNormalizeProducts();
 
   if (search) {
     const q = search.toLowerCase();
     results = results.filter(
-      (p) => p.name.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q))
+      (p) => p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
     );
   }
 
   if (category) {
-    results = results.filter((p) => String(p.category_id) === String(category));
+    results = results.filter((p) => p.category_slug === category);
   }
 
   if (sale) {
@@ -85,21 +84,38 @@ export async function filterProducts({ category, priceRange, search, sale, count
 
   const totalCount = results.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / PER_PAGE));
-  const start = (Math.min(page, totalPages) - 1) * PER_PAGE;
+  const safePage = Math.min(page, totalPages);
+  const start = (safePage - 1) * PER_PAGE;
   const products = results.slice(start, start + PER_PAGE);
 
-  return { products, totalPages, totalCount, currentPage: page };
+  return { products, totalPages, totalCount, currentPage: safePage };
 }
 
 export async function getProductById(productId) {
-  const products = await fetchAndNormalizeProducts();
-  const found = products.find((p) => p.id === Number(productId));
-  return found ? { success: true, data: found } : { success: false };
+  try {
+    const response = await api.get(`/products/${productId}`);
+    if (response.data.success) {
+      const p = response.data.data;
+      let images = [];
+      try { images = p.images ? JSON.parse(p.images) : []; } catch { images = []; }
+
+      return {
+        success: true,
+        data: {
+          ...p,
+          image_url: images[0] || null,
+          images,
+          brand: p.brand_name || "",
+          category_slug: p.category_slug || "",
+        }
+      };
+    }
+    return { success: false };
+  } catch {
+    return { success: false };
+  }
 }
 
-/**
- * 4. Đối tượng productService (Dành cho Admin & Default Import).
- */
 const productService = {
   getAll: async function() {
     const data = await fetchAndNormalizeProducts();

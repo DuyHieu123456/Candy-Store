@@ -12,7 +12,7 @@ import "./ProductDetail.css"; //[cite: 47, 48]
  * Quản lý việc lấy dữ liệu chi tiết và hiển thị bố cục trang[cite: 41, 48].
  */
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,7 +24,7 @@ const ProductDetail = () => {
       setIsLoading(true);
       try {
         // productService.getById trả về object { success, data }
-        const res = await getProductById(id); 
+        const res = await getProductById(slug);
         if (res.success) {
           setProduct(res.data); // Gán dữ liệu sản phẩm đã chuẩn hóa
         } else {
@@ -39,8 +39,8 @@ const ProductDetail = () => {
     };
 
     fetchProductDetail();
-    window.scrollTo(0, 0); // Đảm bảo luôn bắt đầu từ đầu trang
-  }, [id]);
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   // Trạng thái chờ dữ liệu[cite: 48]
   if (isLoading) {
@@ -103,7 +103,7 @@ const ProductDetail = () => {
         </div>
 
         {/* ── Các sản phẩm liên quan cùng danh mục[cite: 31, 48, 54] ── */}
-        <RelatedProducts productId={product.id} category={product.category_id} />
+        <RelatedProducts productId={product.id} category={product.category_slug} />
       </div>
     </section>
   );

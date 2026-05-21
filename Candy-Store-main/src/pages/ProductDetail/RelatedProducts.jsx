@@ -39,8 +39,8 @@ const RelatedProducts = ({ productId, category }) => {
 
   return (
     <section className="related-products">
-      <h2 className="related-products__title">Có thể bạn cũng thích 🍬</h2>[cite: 61]
-      <div className="related-products__grid">[cite: 61]
+      <h2 className="related-products__title">Có thể bạn cũng thích 🍬</h2>
+      <div className="related-products__grid">
         {related.map((p) => (
           <ProductCard key={p.id} product={p} /> 
         ))}

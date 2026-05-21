@@ -31,7 +31,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <Link to={`/products/${product.id}`} className="product-card">
+    <Link to={`/products/${product.slug}`} className="product-card">
       <div className="product-card__badges">
         {discountPct && (
           <span className="badge badge--sale">-{discountPct}%</span>

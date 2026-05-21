@@ -43,7 +43,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "products",     element: <Lazy><Products /></Lazy> },
-      { path: "products/:id", element: <Lazy><ProductDetail /></Lazy> },
+      { path: "products/:slug", element: <Lazy><ProductDetail /></Lazy> },
       { path: "cart",         element: <Lazy><Cart /></Lazy> },
       { path: "checkout",     element: <Lazy><Checkout /></Lazy> },
       { path: "orders",       element: <Lazy><OrderHistory /></Lazy> },
