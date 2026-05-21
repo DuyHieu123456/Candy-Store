@@ -160,11 +160,10 @@ GO
 -- =============================================
 
 -- ── Users (password: 123456) ──
--- bcrypt hash of '123456'
 INSERT INTO Users (name, email, password, phone, role) VALUES
-(N'Admin Candy', 'admin@candy.vn', '$2a$10$8K1p/a0dL1LXMIgoEDFrwOfMQkf9.oBQ8Nnlw8Ow3pYx5Wd1vKYi2', '0901234567', 'admin'),
-(N'Nguyễn Văn A', 'user@candy.vn', '$2a$10$8K1p/a0dL1LXMIgoEDFrwOfMQkf9.oBQ8Nnlw8Ow3pYx5Wd1vKYi2', '0912345678', 'user'),
-(N'Trần Thị B', 'user2@candy.vn', '$2a$10$8K1p/a0dL1LXMIgoEDFrwOfMQkf9.oBQ8Nnlw8Ow3pYx5Wd1vKYi2', '0923456789', 'user');
+(N'Admin Candy', 'admin@candy.vn', '$2b$10$LAV308i4XoO9BoSL12DGmebyw015SVXkZOzxp7Q/SnimkVipsvEL6', '0901234567', 'admin'),
+(N'Nguyễn Văn A', 'user@candy.vn', '$2b$10$LAV308i4XoO9BoSL12DGmebyw015SVXkZOzxp7Q/SnimkVipsvEL6', '0912345678', 'user'),
+(N'Trần Thị B', 'user2@candy.vn', '$2b$10$LAV308i4XoO9BoSL12DGmebyw015SVXkZOzxp7Q/SnimkVipsvEL6', '0923456789', 'user');
 GO
 
 -- ── Categories ──
